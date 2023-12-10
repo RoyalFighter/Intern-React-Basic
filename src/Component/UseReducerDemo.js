@@ -1,8 +1,8 @@
 import React, { useReducer, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import useDarkMode from './CustomHooks/useChangeMode';
+import useDarkMode from '../CustomHooks/useChangeMode';
 
-//this perform following action
+
 const ReducerDemo = (state, action) => {
   switch (action.type) {
     case 'fetch-data':
@@ -30,7 +30,7 @@ function UseReducerDemo() {
     data: [],
     loading: false,
     showButton: true,
-    showForm: false, // New state to control the visibility of the form
+    showForm: false,
   };
 
   const [state, dispatch] = useReducer(ReducerDemo, initialState);
@@ -42,7 +42,6 @@ function UseReducerDemo() {
       try {
         const response = await fetch('https://jsonplaceholder.typicode.com/posts');
         const data = await response.json();
-        console.log('Data fetched:', data);
         dispatch({ type: 'fetch-success', payload: data });
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -66,27 +65,22 @@ function UseReducerDemo() {
 
   const handleAddUpdatePost = () => {
     const postIdToUpdate = newPost.id;
-    
-  // Check if either title or body is empty
-  if (!newPost.title.trim() || !newPost.body.trim()) {
-    toast.error('Both title and body are required.'); // Show error toast
-    return; // Prevent further execution
-  }
+
+    if (!newPost.title.trim() || !newPost.body.trim()) {
+      toast.error('Both title and body are required.');
+      return;
+    }
 
     if (postIdToUpdate) {
-      // If postIdToUpdate exists, it means it's an update
       dispatch({
         type: 'update-post',
         payload: { id: postIdToUpdate, title: newPost.title, body: newPost.body },
       });
     } else {
-      // If postIdToUpdate is null, it means it's an add
       const newPostWithId = { ...newPost, id: state.data.length + 1 };
-
       dispatch({ type: 'add-post', payload: newPostWithId });
     }
 
-    // Reset the newPost state after adding or updating
     setNewPost({ title: '', body: '' });
   };
 
@@ -113,7 +107,6 @@ function UseReducerDemo() {
       {state.loading && <p>Fetching data in {countdown} seconds...</p>}
       {state.loading && <img src="/loader.gif" alt="Loading..." />}
 
-      {/* Display the form only after fetching data */}
       {state.showForm && (
         <div>
           <input
@@ -137,14 +130,16 @@ function UseReducerDemo() {
       )}
 
       <div className={`container mt-3 ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
-        <ul className={`list-group  ${isDarkMode ? 'dark-mode' : 'light-mode'} `}>
+      <ul className={`list-group ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
           {state.data.map((post) => (
-            <li key={post.id} className='list-group-item '>
+            <li key={post.id} className={`list-group-item ${isDarkMode ? 'dark-mode' : 'light-mode'}`}>
               {post.title}
+              <span style={{ marginRight: '10px' }}></span>
               <button className='btn btn-warning ml-2' onClick={() => handleEdit(post.id)}>
                 Edit
               </button>
-              <button className='btn btn-danger ml-2' onClick={() => handleDelete(post.id)}>
+              <span style={{ marginRight: '10px' }}></span>
+              <button className='btn btn-danger' onClick={() => handleDelete(post.id)}>
                 Delete
               </button>
             </li>

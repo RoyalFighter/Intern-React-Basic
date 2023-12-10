@@ -1,7 +1,7 @@
 // App.js
 import React, { useContext, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Link, NavLink, Navigate } from 'react-router-dom';
-import UseReducerDemo from './UseReducerDemo';
+import UseReducerDemo from './Component/UseReducerDemo';
 import Login from './Component/Login';
 import Home from './Component/Home';
 import { AuthContext } from './Context/AuthContext';
@@ -11,8 +11,9 @@ import useDarkMode from './CustomHooks/useChangeMode';
 import UseEffect from './Component/UseEffect';
 import './App.css'
 import Footer from './Component/Footer';
+import DownloadSourceCode from './Component/DownloadSourceCode';
 
-const ProtectedRoute = ({ isAuthenticated, path, element, actionOnUnauthenticated }) => {
+const ProtectedRoute = ({ isAuthenticated,  element, actionOnUnauthenticated }) => {
   useEffect(() => {
     if (!isAuthenticated && actionOnUnauthenticated === 'toastError') {
       // Toastify to display an error toast
@@ -40,22 +41,8 @@ function App() {
           </Link>
           <div className="collapse navbar-collapse">
             <ul className="navbar-nav mr-auto">
-              <li className="nav-item">
-                <NavLink className="nav-link" to="/home" activeClassName="active-link">
-                  Home
-                </NavLink>
-              </li>
-              <li className="nav-item">
-                {isAuthenticated ? (
-                  <Link className="nav-link" to="/login" onClick={handleLogout}>
-                    LogOut
-                  </Link>
-                ) : (
-                  <NavLink className="nav-link" to="/login" activeClassName="active-link">
-                    Login
-                  </NavLink>
-                )}
-              </li>
+              
+             
               <li className="nav-item">
                 <NavLink className="nav-link" to="/useReducer" activeClassName="active-link">
                   UseReducer Demo
@@ -76,7 +63,22 @@ function App() {
                   Switch to {isDarkMode ? 'Light' : 'Dark'} Mode
                 </button>
               </li>
-              
+              <li className="nav-item">
+                <NavLink className="nav-link" to="/downloadSourceCode" activeClassName="active-link">
+                 View/Download Source Code
+                </NavLink>
+              </li>
+               <li className="nav-item">
+                {isAuthenticated ? (
+                  <Link className="nav-link" to="/login" onClick={handleLogout}>
+                    LogOut
+                  </Link>
+                ) : (
+                  <NavLink className="nav-link" to="/login" activeClassName="active-link">
+                    Login
+                  </NavLink>
+                )}
+              </li>
             </ul>
           </div>
         </nav>
@@ -117,6 +119,16 @@ function App() {
                 <ProtectedRoute
                   isAuthenticated={isAuthenticated}
                   element={<UseEffect />}
+                  actionOnUnauthenticated="toastError"
+                />
+              }
+            />
+             <Route
+              path="/downloadSourceCode"
+              element={
+                <ProtectedRoute
+                  isAuthenticated={isAuthenticated}
+                  element={<DownloadSourceCode />}
                   actionOnUnauthenticated="toastError"
                 />
               }
